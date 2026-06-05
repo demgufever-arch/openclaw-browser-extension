@@ -16,8 +16,6 @@ OpenClaw Browser Control extends your OpenClaw assistant with the ability to **n
 
 ## ✨ Features
 
-![Features](docs/features.svg)
-
 | Feature | Description |
 |---------|-------------|
 | 🌐 **Navigation** | Go to URLs, wait for load, manage tabs |
@@ -47,8 +45,6 @@ cd openclaw-browser-extension
 ```
 
 ### Configuration
-
-![Popup UI](docs/popup-ui.svg)
 
 1. Click the 🦞 OpenClaw extension icon in the Chrome toolbar
 2. Configure WebSocket server:
@@ -144,8 +140,6 @@ Responses:
 ```
 
 ## 📋 Command Reference
-
-![Command Flow](docs/command-flow.svg)
 
 ### `navigate` — Go to a URL
 ```json
@@ -313,8 +307,6 @@ Executed via `chrome.scripting.executeScript` in isolated world.
 ```
 
 ## 🏗️ Architecture
-
-![Architecture](docs/architecture.svg)
 
 ```
 openclaw-browser-extension/
