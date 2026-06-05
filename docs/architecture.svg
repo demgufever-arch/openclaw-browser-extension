@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500" width="900" height="500">
+  <!-- Styles -->
+  <style>
+    .box { fill: #f8f9fa; stroke: #667eea; stroke-width: 2; rx: 8; ry: 8; }
+    .box-server { fill: #f0f4ff; stroke: #4caf50; stroke-width: 2; rx: 8; ry: 8; }
+    .box-extension { fill: #fff3e0; stroke: #ff9800; stroke-width: 2; rx: 8; ry: 8; }
+    .box-page { fill: #e8f5e9; stroke: #4caf50; stroke-width: 2; rx: 8; ry: 8; }
+    .arrow { fill: none; stroke: #666; stroke-width: 2; marker-end: url(#arrowhead); }
+    .arrow-label { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 12px; fill: #555; }
+    .title { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 16px; font-weight: 600; fill: #333; }
+    .subtitle { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 11px; fill: #777; }
+    .legend-box { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 11px; fill: #555; }
+  </style>
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#666"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="450" y="30" text-anchor="middle" class="title">OpenClaw Browser Control — Architecture</text>
+
+  <!-- Your WebSocket Server -->
+  <rect x="40" y="60" width="200" height="140" class="box-server"/>
+  <text x="140" y="90" text-anchor="middle" class="title">Your WS Server</text>
+  <text x="140" y="115" text-anchor="middle" class="subtitle">Python / Node / Go / etc.</text>
+  <text x="140" y="140" text-anchor="middle" class="subtitle">ws://localhost:8765</text>
+  <text x="140" y="165" text-anchor="middle" class="subtitle">Sends commands, receives results</text>
+  <text x="140" y="190" text-anchor="middle" class="subtitle">Manages automation logic</text>
+
+  <!-- Chrome Extension (Background) -->
+  <rect x="350" y="60" width="200" height="140" class="box-extension"/>
+  <text x="450" y="90" text-anchor="middle" class="title">Chrome Extension</text>
+  <text x="450" y="115" text-anchor="middle" class="subtitle">Background Service Worker</text>
+  <text x="450" y="140" text-anchor="middle" class="subtitle">WebSocket Client (reconnecting)</text>
+  <text x="450" y="165" text-anchor="middle" class="subtitle">Command routing & validation</text>
+  <text x="450" y="190" text-anchor="middle" class="subtitle">Tab management & screenshots</text>
+
+  <!-- Content Script (Page Context) -->
+  <rect x="660" y="60" width="200" height="140" class="box-page"/>
+  <text x="760" y="90" text-anchor="middle" class="title">Content Script</text>
+  <text x="760" y="115" text-anchor="middle" class="subtitle">Runs in page (isolated world)</text>
+  <text x="760" y="140" text-anchor="middle" class="subtitle">DOMInspector + ActionExecutor</text>
+  <text x="760" y="165" text-anchor="middle" class="subtitle">click, fill, scroll, extract</text>
+  <text x="760" y="190" text-anchor="middle" class="subtitle">Returns results via chrome.runtime</text>
+
+  <!-- Target Web Page -->
+  <rect x="350" y="260" width="200" height="100" class="box"/>
+  <text x="450" y="290" text-anchor="middle" class="title">Target Web Page</text>
+  <text x="450" y="315" text-anchor="middle" class="subtitle">Any site (SPA, static, iframe)</text>
+  <text x="450" y="340" text-anchor="middle" class="subtitle">Receives synthetic events</text>
+
+  <!-- Popup UI -->
+  <rect x="40" y="260" width="200" height="100" class="box-extension"/>
+  <text x="140" y="290" text-anchor="middle" class="title">Popup UI</text>
+  <text x="140" y="315" text-anchor="middle" class="subtitle">Connection status & settings</text>
+  <text x="140" y="340" text-anchor="middle" class="subtitle">Activity log</text>
+
+  <!-- Arrows: Server ↔ Background -->
+  <path d="M 240 130 H 350" class="arrow"/>
+  <text x="295" y="120" text-anchor="middle" class="arrow-label">WebSocket (JSON)</text>
+
+  <!-- Arrows: Background ↔ Content Script -->
+  <path d="M 550 130 H 660" class="arrow"/>
+  <text x="605" y="120" text-anchor="middle" class="arrow-label">chrome.tabs.sendMessage</text>
+
+  <!-- Arrows: Background → Screenshot API -->
+  <path d="M 450 200 V 260" class="arrow"/>
+  <text x="465" y="230" text-anchor="start" class="arrow-label">chrome.tabs.captureVisibleTab</text>
+
+  <!-- Arrows: Content Script ↔ Page -->
+  <path d="M 760 200 V 260" class="arrow"/>
+  <text x="775" y="230" text-anchor="start" class="arrow-label">Synthetic DOM events</text>
+
+  <!-- Arrows: Popup ↔ Background -->
+  <path d="M 140 360 V 400" class="arrow" style="marker-end: none; stroke-dasharray: 5,5;"/>
+  <path d="M 140 400 H 450" class="arrow" style="marker-end: none; stroke-dasharray: 5,5;"/>
+  <text x="295" y="390" text-anchor="middle" class="arrow-label">chrome.runtime.sendMessage</text>
+
+  <!-- Legend -->
+  <rect x="40" y="420" width="820" height="70" fill="#fafafa" stroke="#ddd" rx="6"/>
+  <text x="60" y="440" class="legend-box">🟢 Your Server — Runs your automation logic, sends commands via WebSocket</text>
+  <text x="60" y="458" class="legend-box">🟠 Extension (Background) — Manifest V3 service worker, routes commands, manages WebSocket lifecycle</text>
+  <text x="460" y="440" class="legend-box">🟢 Content Script — Isolated world, executes DOM actions, inspects elements, extracts data</text>
+  <text x="460" y="458" class="legend-box">⬜ Target Page — Any website; receives synthetic events (click, input, scroll) from content script</text>
+</svg>

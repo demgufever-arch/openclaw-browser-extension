@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 400" width="900" height="400">
+  <style>
+    .card { fill: white; stroke: #e8e8e8; stroke-width: 1; rx: 12; ry: 12; }
+    .card:hover { stroke: #667eea; stroke-width: 2; }
+    .icon-bg { fill: #f0f4ff; rx: 8; ry: 8; }
+    .icon-bg.green { fill: #e8f5e9; }
+    .icon-bg.orange { fill: #fff3e0; }
+    .icon-bg.purple { fill: #f3e5f5; }
+    .icon-bg.red { fill: #fce4ec; }
+    .icon-bg.blue { fill: #e3f2fd; }
+    .icon-bg.teal { fill: #e0f2f1; }
+    .icon-bg.indigo { fill: #e8eaf6; }
+    .title { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 14px; font-weight: 600; fill: #333; }
+    .desc { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 11px; fill: #666; }
+    .tag { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 9px; font-weight: 500; fill: #667eea; }
+    .tag.green { fill: #4caf50; }
+    .tag.orange { fill: #ff9800; }
+    .tag.purple { fill: #9c27b0; }
+    .tag.red { fill: #f44336; }
+    .tag.blue { fill: #2196f3; }
+    .tag.teal { fill: #009688; }
+    .tag.indigo { fill: #3f51b5; }
+    .cmd { font-family: 'Monaco', 'Menlo', monospace; font-size: 9px; fill: #333; }
+  </style>
+
+  <!-- Title -->
+  <text x="450" y="25" text-anchor="middle" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 20px; font-weight: 700; fill: #333;">Core Features</text>
+
+  <!-- Row 1: Navigation & Content -->
+  <!-- Navigate -->
+  <rect x="20" y="40" width="200" height="160" class="card"/>
+  <rect x="40" y="60" width="48" height="48" class="icon-bg"/>
+  <text x="64" y="92" text-anchor="middle" style="font-size:24px;">🌐</text>
+  <text x="120" y="80" text-anchor="middle" class="title">Navigate</text>
+  <text x="120" y="100" text-anchor="middle" class="desc">Go to any URL, wait for full load, manage tabs</text>
+  <text x="120" y="125" text-anchor="middle" class="tag">action: navigate</text>
+  <text x="120" y="145" text-anchor="middle" class="cmd">{ "action": "navigate", "params": { "url": "..." } }</text>
+
+  <!-- Get Content -->
+  <rect x="240" y="40" width="200" height="160" class="card"/>
+  <rect x="260" y="60" width="48" height="48" class="icon-bg green"/>
+  <text x="284" y="92" text-anchor="middle" style="font-size:24px;">📄</text>
+  <text x="340" y="80" text-anchor="middle" class="title">Get Content</text>
+  <text x="340" y="100" text-anchor="middle" class="desc">Extract text, HTML, links, images, forms, custom selectors</text>
+  <text x="340" y="125" text-anchor="middle" class="tag green">action: getContent</text>
+  <text x="340" y="145" text-anchor="middle" class="cmd">{ "action": "getContent", "params": { "includeText": true } }</text>
+
+  <!-- DOM Inspection -->
+  <rect x="460" y="40" width="200" height="160" class="card"/>
+  <rect x="480" y="60" width="48" height="48" class="icon-bg orange"/>
+  <text x="504" y="92" text-anchor="middle" style="font-size:24px;">🔍</text>
+  <text x="560" y="80" text-anchor="middle" class="title">Inspect DOM</text>
+  <text x="560" y="100" text-anchor="middle" class="desc">CSS, XPath, text selectors → position, styles, attributes, XPath, unique selector</text>
+  <text x="560" y="125" text-anchor="middle" class="tag orange">action: inspect</text>
+  <text x="560" y="145" text-anchor="middle" class="cmd">{ "action": "inspect", "params": { "selector": "#id" } }</text>
+
+  <!-- Screenshots -->
+  <rect x="680" y="40" width="200" height="160" class="card"/>
+  <rect x="700" y="60" width="48" height="48" class="icon-bg purple"/>
+  <text x="724" y="92" text-anchor="middle" style="font-size:24px;">📸</text>
+  <text x="780" y="80" text-anchor="middle" class="title">Screenshots</text>
+  <text x="780" y="100" text-anchor="middle" class="desc">Capture visible tab as base64 PNG/JPEG with quality control</text>
+  <text x="780" y="125" text-anchor="middle" class="tag purple">action: screenshot</text>
+  <text x="780" y="145" text-anchor="middle" class="cmd">{ "action": "screenshot", "params": { "format": "png" } }</text>
+
+  <!-- Row 2: Actions & Extraction -->
+  <!-- Click & Fill -->
+  <rect x="20" y="220" width="200" height="160" class="card"/>
+  <rect x="40" y="240" width="48" height="48" class="icon-bg red"/>
+  <text x="64" y="272" text-anchor="middle" style="font-size:24px;">🖱️</text>
+  <text x="120" y="260" text-anchor="middle" class="title">Click &amp; Fill</text>
+  <text x="120" y="280" text-anchor="middle" class="desc">Click, type (char-by-char), select, check, hover, submit forms</text>
+  <text x="120" y="305" text-anchor="middle" class="tag red">actions: click, fill, select, check, hover, submit</text>
+  <text x="120" y="325" text-anchor="middle" class="cmd">{ "action": "fill", "params": { "selector": "input", "value": "text" } }</text>
+
+  <!-- Scroll & Wait -->
+  <rect x="240" y="220" width="200" height="160" class="card"/>
+  <rect x="260" y="240" width="48" height="48" class="icon-bg blue"/>
+  <text x="284" y="272" text-anchor="middle" style="font-size:24px;">⏱️</text>
+  <text x="340" y="260" text-anchor="middle" class="title">Scroll &amp; Wait</text>
+  <text x="340" y="280" text-anchor="middle" class="desc">Scroll page/element, wait for elements with timeout &amp; visibility check</text>
+  <text x="340" y="305" text-anchor="middle" class="tag blue">actions: scroll, waitFor</text>
+  <text x="340" y="325" text-anchor="middle" class="cmd">{ "action": "waitFor", "params": { "selector": ".ready", "timeout": 10000 } }</text>
+
+  <!-- Extract Data -->
+  <rect x="460" y="220" width="200" height="160" class="card"/>
+  <rect x="480" y="240" width="48" height="48" class="icon-bg teal"/>
+  <text x="504" y="272" text-anchor="middle" style="font-size:24px;">🎯</text>
+  <text x="560" y="260" text-anchor="middle" class="title">Structured Extract</text>
+  <text x="560" y="280" text-anchor="middle" class="desc">Declare JSON schema → get typed data (single + lists with nested fields)</text>
+  <text x="560" y="305" text-anchor="middle" class="tag teal">action: extractData</text>
+  <text x="560" y="325" text-anchor="middle" class="cmd">{ "action": "extractData", "params": { "schema": { "title": "h1", "items": { "type": "list", ... } } } }</text>
+
+  <!-- Evaluate JS -->
+  <rect x="680" y="220" width="200" height="160" class="card"/>
+  <rect x="700" y="240" width="48" height="48" class="icon-bg indigo"/>
+  <text x="724" y="272" text-anchor="middle" style="font-size:24px;">⚡</text>
+  <text x="780" y="260" text-anchor="middle" class="title">Evaluate JS</text>
+  <text x="780" y="280" text-anchor="middle" class="desc">Run arbitrary JS in isolated world via chrome.scripting.executeScript</text>
+  <text x="780" y="305" text-anchor="middle" class="tag indigo">action: evaluate</text>
+  <text x="780" y="325" text-anchor="middle" class="cmd">{ "action": "evaluate", "params": { "script": "return 1+1" } }</text>
+</svg>

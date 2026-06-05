@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600" width="1000" height="600">
+  <style>
+    .step-box { fill: #f8f9fa; stroke: #667eea; stroke-width: 2; rx: 10; ry: 10; }
+    .step-box.active { fill: #e8f5e9; stroke: #4caf50; stroke-width: 3; }
+    .step-num { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 24px; font-weight: 700; fill: #667eea; }
+    .step-num.active { fill: #4caf50; }
+    .step-title { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 14px; font-weight: 600; fill: #333; }
+    .step-desc { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 11px; fill: #666; }
+    .arrow { fill: none; stroke: #667eea; stroke-width: 2; marker-end: url(#arrowhead); }
+    .arrow-back { fill: none; stroke: #4caf50; stroke-width: 2; marker-end: url(#arrowhead-green); }
+    .code { font-family: 'Monaco', 'Menlo', 'Consolas', monospace; font-size: 10px; fill: #333; }
+    .label { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 11px; fill: #555; }
+  </style>
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#667eea"/>
+    </marker>
+    <marker id="arrowhead-green" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#4caf50"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="500" y="35" text-anchor="middle" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 20px; font-weight: 700; fill: #333;">Command Flow: navigate → click → extractData</text>
+
+  <!-- Step 1: Your Server -->
+  <rect x="50" y="60" width="250" height="160" class="step-box active"/>
+  <text x="175" y="95" text-anchor="middle" class="step-num active">1</text>
+  <text x="175" y="125" text-anchor="middle" class="step-title">Your WebSocket Server</text>
+  <text x="175" y="150" text-anchor="middle" class="step-desc">Send command JSON</text>
+  <text x="175" y="175" text-anchor="middle" class="step-desc">await websocket.recv()</text>
+  <text x="175" y="200" text-anchor="middle" class="code">{ "id": "cmd-001", "action": "navigate", "params": { "url": "https://example.com" } }</text>
+
+  <!-- Arrow 1 -->
+  <path d="M 300 140 H 400" class="arrow"/>
+  <text x="350" y="130" text-anchor="middle" class="label">WebSocket send()</text>
+
+  <!-- Step 2: Background Service Worker -->
+  <rect x="420" y="60" width="250" height="160" class="step-box active"/>
+  <text x="545" y="95" text-anchor="middle" class="step-num active">2</text>
+  <text x="545" y="125" text-anchor="middle" class="step-title">Background SW</text>
+  <text x="545" y="150" text-anchor="middle" class="step-desc">Receive → Validate → Route</text>
+  <text x="545" y="175" text-anchor="middle" class="step-desc">chrome.tabs.query(active)</text>
+  <text x="545" y="200" text-anchor="middle" class="code">executeCommand({action:'navigate',params:{url}})</text>
+
+  <!-- Arrow 2 -->
+  <path d="M 670 140 H 770" class="arrow"/>
+  <text x="720" y="130" text-anchor="middle" class="label">chrome.tabs.update()</text>
+
+  <!-- Step 3: Browser Navigation -->
+  <rect x="790" y="60" width="180" height="160" class="step-box active"/>
+  <text x="880" y="95" text-anchor="middle" class="step-num active">3</text>
+  <text x="880" y="125" text-anchor="middle" class="step-title">Chrome Tab</text>
+  <text x="880" y="150" text-anchor="middle" class="step-desc">Navigates to URL</text>
+  <text x="880" y="175" text-anchor="middle" class="step-desc">Waits for 'complete'</text>
+  <text x="880" y="200" text-anchor="middle" class="code">tab.url = 'https://example.com'</text>
+
+  <!-- Step 4: Content Script Loaded -->
+  <rect x="420" y="250" width="250" height="160" class="step-box active"/>
+  <text x="545" y="285" text-anchor="middle" class="step-num active">4</text>
+  <text x="545" y="315" text-anchor="middle" class="step-title">Content Script</text>
+  <text x="545" y="340" text-anchor="middle" class="step-desc">Auto-injected at document_idle</text>
+  <text x="545" y="365" text-anchor="middle" class="step-desc">DOMInspector + ActionExecutor ready</text>
+  <text x="545" y="390" text-anchor="middle" class="code">chrome.runtime.onMessage.addListener(...)</text>
+
+  <!-- Arrow 3: Background → Content Script (for next command) -->
+  <path d="M 545 220 V 250" class="arrow"/>
+  <text x="560" y="235" text-anchor="start" class="label">chrome.tabs.sendMessage({action:'click',...})</text>
+
+  <!-- Step 5: Click Command -->
+  <rect x="50" y="250" width="250" height="160" class="step-box"/>
+  <text x="175" y="285" text-anchor="middle" class="step-num">5</text>
+  <text x="175" y="315" text-anchor="middle" class="step-title">Your Server Sends</text>
+  <text x="175" y="340" text-anchor="middle" class="step-desc">click command</text>
+  <text x="175" y="365" text-anchor="middle" class="code">{ "action": "click", "params": { "selector": "button.cta" } }</text>
+
+  <!-- Arrow 4: Server → Background -->
+  <path d="M 175 410 V 450" class="arrow" style="stroke-dasharray: 5,5;"/>
+  <path d="M 175 450 H 545" class="arrow" style="stroke-dasharray: 5,5;"/>
+
+  <!-- Step 6: ActionExecutor.click() -->
+  <rect x="670" y="250" width="300" height="160" class="step-box active"/>
+  <text x="820" y="285" text-anchor="middle" class="step-num active">6</text>
+  <text x="820" y="315" text-anchor="middle" class="step-title">ActionExecutor.click()</text>
+  <text x="820" y="340" text-anchor="middle" class="step-desc">Find element → scrollIntoView → dispatchEvent</text>
+  <text x="820" y="365" text-anchor="middle" class="code">element.dispatchEvent(new MouseEvent('click'))</text>
+  <text x="820" y="390" text-anchor="middle" class="code">element.click() // native fallback</text>
+
+  <!-- Arrow 5: Click → Page -->
+  <path d="M 820 410 V 450" class="arrow" style="stroke-dasharray: 5,5;"/>
+  <text x="835" y="430" class="label">Synthetic click event</text>
+
+  <!-- Step 7: extractData Command -->
+  <rect x="50" y="460" width="250" height="120" class="step-box"/>
+  <text x="175" y="490" text-anchor="middle" class="step-num">7</text>
+  <text x="175" y="515" text-anchor="middle" class="step-title">extractData</text>
+  <text x="175" y="535" text-anchor="middle" class="step-desc">Schema-based extraction</text>
+  <text x="175" y="555" text-anchor="middle" class="code">{ "action": "extractData", "params": { "schema": { "title": "h1", "items": { "type": "list", "selector": ".card", "fields": { "name": "h3" } } } } }</text>
+
+  <!-- Arrow 6: Background → Content Script (extract) -->
+  <path d="M 545 410 V 460" class="arrow-back"/>
+  <text x="560" y="435" class="label">chrome.tabs.sendMessage({action:'extractData',...})</text>
+
+  <!-- Step 8: DOM Extraction -->
+  <rect x="420" y="460" width="250" height="120" class="step-box active"/>
+  <text x="545" y="490" text-anchor="middle" class="step-num active">8</text>
+  <text x="545" y="515" text-anchor="middle" class="step-title">DOMInspector.queryElements()</text>
+  <text x="545" y="535" text-anchor="middle" class="step-desc">document.querySelectorAll + map to JSON</text>
+  <text x="545" y="555" text-anchor="middle" class="code">return { title: 'Example', items: [{name:'Item 1'},...] }</text>
+
+  <!-- Arrow 7: Response back -->
+  <path d="M 545 580 V 620" class="arrow-back" style="marker-end: none;"/>
+  <path d="M 545 620 H 175" class="arrow-back" style="marker-end: none;"/>
+  <path d="M 175 620 V 580" class="arrow-back"/>
+  <text x="360" y="610" text-anchor="middle" class="label" style="fill:#4caf50;">Response: { success: true, result: {...} }</text>
+
+  <!-- Legend -->
+  <rect x="50" y="590" width="900" height="50" fill="#fafafa" stroke="#ddd" rx="6"/>
+  <text x="70" y="610" class="label" style="font-weight:600;">→ Green = Request flow (your server → extension → page)</text>
+  <text x="70" y="628" class="label" style="fill:#4caf50;">→ Green dashed = Response flow (page → extension → your server)</text>
+  <text x="500" y="610" class="label" style="font-weight:600;">Solid = Current step | Dashed = Subsequent commands</text>
+</svg>
