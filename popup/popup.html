@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OpenClaw Browser Control</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🦞 OpenClaw</h1>
+      <p class="subtitle">Browser Control</p>
+    </header>
+
+    <div class="status">
+      <div class="status-indicator">
+        <span id="statusDot" class="dot disconnected"></span>
+        <span id="statusText">Disconnected</span>
+      </div>
+    </div>
+
+    <div class="connection-info">
+      <div class="info-row">
+        <label>Server:</label>
+        <span id="serverAddress">-</span>
+      </div>
+      <div class="info-row">
+        <label>Port:</label>
+        <span id="serverPort">-</span>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button id="connectBtn" class="btn btn-primary">Connect</button>
+      <button id="disconnectBtn" class="btn btn-secondary" disabled>Disconnect</button>
+    </div>
+
+    <div class="settings">
+      <h3>Settings</h3>
+
+      <div class="form-group">
+        <label for="hostInput">WebSocket Host:</label>
+        <input type="text" id="hostInput" value="localhost" />
+      </div>
+
+      <div class="form-group">
+        <label for="portInput">WebSocket Port:</label>
+        <input type="number" id="portInput" value="8765" />
+      </div>
+
+      <div class="form-group">
+        <label>
+          <input type="checkbox" id="autoConnectCheckbox" />
+          Auto-connect on startup
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label>
+          <input type="checkbox" id="autoReconnectCheckbox" checked />
+          Auto-reconnect on disconnect
+        </label>
+      </div>
+
+      <button id="saveBtn" class="btn btn-primary">Save Settings</button>
+    </div>
+
+    <div class="logs">
+      <h3>Activity Log</h3>
+      <div id="logContainer" class="log-container"></div>
+      <button id="clearLogsBtn" class="btn btn-secondary btn-sm">Clear Logs</button>
+    </div>
+
+    <footer>
+      <p class="version">Version 1.0.0</p>
+    </footer>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
