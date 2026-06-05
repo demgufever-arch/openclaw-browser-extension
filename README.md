@@ -1,98 +1,157 @@
-# OpenClaw Browser Control Chrome Extension
+[![CI](https://github.com/parithosh-varma/openclaw-browser-extension/actions/workflows/ci.yml/badge.svg)](https://github.com/parithosh-varma/openclaw-browser-extension/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/parithosh-varma/openclaw-browser-extension)](https://github.com/parithosh-varma/openclaw-browser-extension/releases)
+[![License](https://img.shields.io/github/license/parithosh-varma/openclaw-browser-extension)](https://github.com/parithosh-varma/openclaw-browser-extension/blob/main/LICENSE)
+[![Manifest V3](https://img.shields.io/badge/Manifest-V3-blue)](https://developer.chrome.com/docs/extensions/mv3/)
+[![Node](https://img.shields.io/badge/Node-24%2B-green)](https://nodejs.org/)
 
-A powerful Chrome extension that enables OpenClaw AI to interact with webpages through a secure WebSocket interface.
+# 🦞 OpenClaw Browser Control
 
-## Features
+**A Chrome extension that enables OpenClaw AI to interact with webpages through a secure WebSocket interface.**
 
-- 🌐 **Page Navigation** - Navigate to URLs and manage browser tabs
-- 📄 **Content Reading** - Extract text, HTML, links, images, and forms
-- 🔍 **DOM Inspection** - Query and inspect elements with detailed information
-- 🖱️ **User Actions** - Click, fill forms, scroll, hover, and more
-- 📸 **Screenshots** - Capture visible tab screenshots
-- ⏱️ **Smart Waiting** - Wait for elements to appear or conditions to be met
-- 🎯 **Data Extraction** - Extract structured data using custom schemas
-- 🔒 **Secure** - WebSocket communication with localhost only
+[Website](https://openclaw.ai) · [OpenClaw Docs](https://docs.openclaw.ai) · [Main Repo](https://github.com/openclaw/openclaw) · [Discord](https://discord.gg/clawd)
 
-## Installation
+---
 
-### From Source
+OpenClaw Browser Control extends your OpenClaw assistant with the ability to **navigate, inspect, extract, and automate** any webpage — all controlled via a local WebSocket connection. No cloud, no external dependencies, just your browser and your assistant.
 
-1. Clone or download this repository
-2. Open Chrome and navigate to `chrome://extensions/`
-3. Enable "Developer mode" (toggle in top-right)
-4. Click "Load unpacked"
-5. Select the `openclaw-browser-extension` directory
+## ✨ Features
+
+| Feature | Description |
+|---------|-------------|
+| 🌐 **Navigation** | Go to URLs, wait for load, manage tabs |
+| 📄 **Content Reading** | Extract text, HTML, links, images, forms |
+| 🔍 **DOM Inspection** | Query elements with CSS, XPath, or text selectors — get position, styles, attributes, XPath, unique selector |
+| 🖱️ **User Actions** | Click, fill, scroll, hover, select, check, submit, type character-by-character |
+| 📸 **Screenshots** | Capture visible tab as base64 PNG/JPEG |
+| ⏱️ **Smart Waiting** | Wait for elements to appear/become visible with timeout |
+| 🎯 **Structured Extraction** | Declare a schema, get typed JSON back |
+| 🔒 **Secure by Default** | Localhost-only WebSocket, no external calls, user-approved install |
+
+## 📦 Installation
+
+### From Chrome Web Store (Recommended)
+*Coming soon — packaging for Chrome Web Store is in progress.*
+
+### From Source (Developer Mode)
+
+```bash
+# Clone the repo
+git clone https://github.com/parithosh-varma/openclaw-browser-extension.git
+cd openclaw-browser-extension
+
+# Open Chrome → chrome://extensions/
+# Enable "Developer mode" (top right)
+# Click "Load unpacked" → select this directory
+```
 
 ### Configuration
 
-1. Click the OpenClaw extension icon in Chrome toolbar
-2. Configure WebSocket server settings:
-   - **Host**: localhost (default)
-   - **Port**: 8765 (default)
-3. Enable auto-connect if desired
-4. Click "Save Settings"
+1. Click the 🦞 OpenClaw extension icon in the Chrome toolbar
+2. Configure WebSocket server:
+   - **Host:** `localhost` (default)
+   - **Port:** `8765` (default)
+3. Enable **Auto-connect on startup** if desired
+4. Click **Save Settings** → **Connect**
 
-## Usage
+The badge on the extension icon shows connection status:
+- 🟢 **Green dot** = Connected
+- 🔴 **Red dot** = Disconnected
 
-### Starting the WebSocket Server
+## 🚀 Quick Start
 
-You'll need a WebSocket server running on your machine that OpenClaw can connect to. Here's a simple Python example:
+### 1. Start a WebSocket Server
+
+You need a local WebSocket server that the extension connects to. Here's a minimal Python example:
 
 ```python
+# server.py
 import asyncio
 import websockets
 import json
 
-async def handle_client(websocket, path):
-    print("Client connected")
-
+async def handle_client(websocket):
+    print("🦞 Extension connected")
     try:
-        # Send a command to the extension
-        command = {
+        # Example: navigate to a page
+        await websocket.send(json.dumps({
             "id": "cmd-001",
             "action": "navigate",
-            "params": {
-                "url": "https://example.com"
-            }
-        }
-
-        await websocket.send(json.dumps(command))
-
-        # Receive result
+            "params": {"url": "https://example.com"}
+        }))
         response = await websocket.recv()
-        result = json.loads(response)
+        print("Result:", json.loads(response))
 
-        print("Result:", result)
+        # Example: extract structured data
+        await websocket.send(json.dumps({
+            "id": "cmd-002",
+            "action": "extractData",
+            "params": {
+                "schema": {
+                    "title": "h1",
+                    "description": "p",
+                    "links": {
+                        "type": "list",
+                        "selector": "a",
+                        "fields": {"text": ".", "href": "@href"}
+                    }
+                }
+            }
+        }))
+        response = await websocket.recv()
+        print("Extracted:", json.loads(response))
 
     except websockets.exceptions.ConnectionClosed:
-        print("Client disconnected")
+        print("Extension disconnected")
 
 async def main():
     async with websockets.serve(handle_client, "localhost", 8765):
-        print("WebSocket server started on ws://localhost:8765")
-        await asyncio.Future() # run forever
+        print("🦞 WebSocket server running on ws://localhost:8765")
+        await asyncio.Future()
 
 if __name__ == "__main__":
     asyncio.run(main())
 ```
 
-### Available Commands
+```bash
+pip install websockets
+python server.py
+```
 
-#### Navigate
+### 2. Send Commands
+
+All commands follow this format:
+
 ```json
 {
-  "id": "unique-id",
-  "action": "navigate",
-  "params": {
-    "url": "https://example.com"
-  }
+  "id": "unique-command-id",
+  "action": "commandName",
+  "params": { /* action-specific params */ }
 }
 ```
 
-#### Get Page Content
+Responses:
+
+```json
+// Success
+{ "id": "unique-command-id", "success": true, "result": { ... } }
+
+// Error
+{ "id": "unique-command-id", "success": false, "error": { "message": "...", "stack": "..." } }
+```
+
+## 📋 Command Reference
+
+### `navigate` — Go to a URL
+```json
+{ "action": "navigate", "params": { "url": "https://example.com" } }
+```
+Waits for `document.readyState === 'complete'`.
+
+---
+
+### `getContent` — Read page content
 ```json
 {
-  "id": "unique-id",
   "action": "getContent",
   "params": {
     "includeText": true,
@@ -104,67 +163,57 @@ if __name__ == "__main__":
   }
 }
 ```
+Returns `{ url, title, timestamp, text?, html?, links?, images?, forms?, elements? }`.
 
-#### Click Element
+---
+
+### `click` — Click an element
 ```json
 {
-  "id": "unique-id",
   "action": "click",
   "params": {
     "selector": "button.submit",
-    "options": {
-      "scrollIntoView": true
-    }
+    "options": { "scrollIntoView": true }
   }
 }
 ```
 
-#### Fill Input
+---
+
+### `fill` — Fill an input/textarea
 ```json
 {
-  "id": "unique-id",
   "action": "fill",
   "params": {
     "selector": "input[name='email']",
     "value": "user@example.com",
-    "options": {
-      "clear": true,
-      "type": false,
-      "blur": true
-    }
+    "options": { "clear": true, "type": false, "typeDelay": 50, "blur": true }
   }
 }
 ```
+Set `"type": true` to simulate keystrokes (triggers `keydown`/`keypress`/`input`/`keyup` per character).
 
-#### Scroll Page
+---
+
+### `scroll` — Scroll page or element
 ```json
-{
-  "id": "unique-id",
-  "action": "scroll",
-  "params": {
-    "x": 0,
-    "y": 500,
-    "behavior": "smooth"
-  }
-}
+{ "action": "scroll", "params": { "x": 0, "y": 500, "behavior": "smooth" } }
 ```
+Add `"selector": ".scroll-container"` to scroll a specific element.
 
-#### Take Screenshot
+---
+
+### `screenshot` — Capture visible tab
 ```json
-{
-  "id": "unique-id",
-  "action": "screenshot",
-  "params": {
-    "format": "png",
-    "quality": 90
-  }
-}
+{ "action": "screenshot", "params": { "format": "png", "quality": 90 } }
 ```
+Returns `{ screenshot: "data:image/png;base64,...", format: "png" }`.
 
-#### Inspect Element
+---
+
+### `inspect` — Get detailed element info
 ```json
 {
-  "id": "unique-id",
   "action": "inspect",
   "params": {
     "selector": "#main-header",
@@ -173,24 +222,24 @@ if __name__ == "__main__":
   }
 }
 ```
+Returns tag, id, class, text, value, attributes, position, computed styles, visibility, interactivity, XPath, unique CSS selector. `highlight: true` adds a green overlay for 3s.
 
-#### Wait for Element
+---
+
+### `waitFor` — Wait for element to appear
 ```json
 {
-  "id": "unique-id",
   "action": "waitFor",
-  "params": {
-    "selector": ".loading-complete",
-    "timeout": 10000,
-    "visible": true
-  }
+  "params": { "selector": ".loading-complete", "timeout": 10000, "visible": true }
 }
 ```
+Resolves when element exists (and is visible if `visible: true`).
 
-#### Extract Data
+---
+
+### `extractData` — Structured data extraction
 ```json
 {
-  "id": "unique-id",
   "action": "extractData",
   "params": {
     "schema": {
@@ -198,157 +247,176 @@ if __name__ == "__main__":
       "description": "p.description",
       "items": {
         "type": "list",
-        "selector": ".item",
+        "selector": ".product",
         "fields": {
-          "name": ".item-name",
-          "price": ".item-price"
+          "name": ".product-name",
+          "price": ".product-price",
+          "link": { "xpath": ".//a/@href" }
         }
       }
     }
   }
 }
 ```
+**Selector types:**
+- **String** → CSS selector: `"h1.title"`
+- **Object (XPath)** → `{ "xpath": "//h1[contains(@class,'title')]" }`
+- **Object (Text)** → `{ "text": "Click me", "tag": "button" }`
+- **List** → `{ "type": "list", "selector": ".item", "fields": { ... } }`
 
-### Selector Types
+---
 
-The extension supports multiple selector types:
-
-```javascript
-// CSS Selector (string)
-"selector": "button.submit"
-
-// XPath
-"selector": {
-  "xpath": "//button[contains(text(), 'Submit')]"
-}
-
-// Text Content
-"selector": {
-  "text": "Click me",
-  "tag": "button"
-}
-```
-
-### Response Format
-
-All commands receive a response in this format:
-
+### `evaluate` — Run arbitrary JavaScript
 ```json
 {
-  "id": "unique-id",
-  "success": true,
-  "result": {
-    // Command-specific result data
+  "action": "evaluate",
+  "params": {
+    "script": "return document.querySelectorAll('a').length",
+    "args": []
   }
 }
 ```
+Executed via `chrome.scripting.executeScript` in isolated world.
 
-Error responses:
+---
 
+### `select` — Select dropdown option
 ```json
-{
-  "id": "unique-id",
-  "success": false,
-  "error": {
-    "message": "Error description",
-    "stack": "Error stack trace"
-  }
-}
+{ "action": "select", "params": { "selector": "select#country", "value": "US" } }
 ```
 
-## Development
+---
 
-### Project Structure
+### `check` — Check/uncheck checkbox
+```json
+{ "action": "check", "params": { "selector": "input#terms", "checked": true } }
+```
+
+---
+
+### `submit` — Submit a form
+```json
+{ "action": "submit", "params": { "selector": "form#login" } }
+```
+
+---
+
+### `hover` — Hover over element
+```json
+{ "action": "hover", "params": { "selector": ".dropdown-trigger" } }
+```
+
+## 🏗️ Architecture
 
 ```
 openclaw-browser-extension/
-├── manifest.json              # Extension manifest (V3)
+├── manifest.json                 # Manifest V3
 ├── background/
-│   ├── service-worker.js      # Main background script
-│   └── websocket-client.js    # WebSocket client implementation
+│   ├── service-worker.js         # Entry point, command routing, WebSocket lifecycle
+│   └── websocket-client.js       # Reconnecting WebSocket client (event emitter)
 ├── content/
-│   ├── content-script.js      # Content script coordinator
-│   ├── dom-inspector.js       # DOM inspection utilities
-│   └── action-executor.js     # Action execution (click, fill, etc.)
+│   ├── content-script.js         # Message router, content/extraction logic
+│   ├── dom-inspector.js          # Element querying, inspection, highlighting
+│   └── action-executor.js        # Click, fill, scroll, select, check, hover, submit
 ├── popup/
-│   ├── popup.html             # Extension popup UI
-│   ├── popup.js               # Popup logic
-│   └── popup.css              # Popup styles
+│   ├── popup.html                # Connection UI, settings, activity log
+│   ├── popup.js                  # Popup logic, status, config persistence
+│   └── popup.css                 # Styles
 ├── utils/
-│   ├── logger.js              # Logging utility
-│   └── message-handler.js     # Message routing
+│   ├── logger.js                 # Leveled console logging
+│   └── message-handler.js        # Action→handler registry
 └── icons/
     ├── icon16.png
     ├── icon48.png
     └── icon128.png
 ```
 
-### Building
+**Communication Flow:**
+```
+Your Server (WS) ↔ Background (Service Worker) ↔ Content Script (Page Context)
+                                    ↓
+                              chrome.tabs.sendMessage / scripting.executeScript
+```
 
-This extension doesn't require a build step. However, if you want to package it:
+## 🛠️ Development
+
+### Prerequisites
+- Node.js 24+ (recommended) or 22.19+
+- Chrome 120+ (Manifest V3 support)
+
+### No Build Step Required
+This extension loads as-is in Developer Mode. For packaging:
 
 ```bash
 cd openclaw-browser-extension
-zip -r openclaw-extension.zip . -x "*.git*" "README.md"
+zip -r openclaw-extension.zip . -x "*.git*" "*.md" "*.log"
 ```
 
 ### Debugging
 
-1. **Background Script**:
-   - Go to `chrome://extensions/`
-   - Click "Inspect views: service worker"
+| Target | How |
+|--------|-----|
+| **Background (Service Worker)** | `chrome://extensions/` → "Inspect views: service worker" |
+| **Content Script** | Open DevTools on any page → Console (filter `[ContentScript]`) |
+| **Popup** | Right-click extension icon → "Inspect popup" |
 
-2. **Content Script**:
-   - Open DevTools on any webpage
-   - Check Console for logs prefixed with `[ContentScript]`
+### Testing Commands Manually
 
-3. **Popup**:
-   - Right-click extension icon
-   - Select "Inspect popup"
+In the background service worker console:
+```javascript
+// Simulate a command from WebSocket
+chrome.runtime.sendMessage({
+  action: 'getContent',
+  params: { includeText: true }
+}, console.log);
+```
 
-## Security Considerations
+## 🔒 Security
 
-- Only connects to `localhost` WebSocket servers
-- Requires user approval for extension installation
-- All commands are validated before execution
-- Content scripts run in isolated world
-- No external dependencies or CDNs
+- **Localhost-only** — WebSocket connects to `ws://localhost:8765` only
+- **No external dependencies** — No CDNs, no analytics, no tracking
+- **User consent required** — Extension must be installed explicitly
+- **Isolated world** — Content scripts run in isolated JS world, cannot be detected by page scripts
+- **Command validation** — All actions validated before execution
+- **Manifest V3** — No background pages, service worker lifecycle, CSP enforced
 
-## Limitations
+## ⚠️ Limitations
 
-- Manifest V3 service workers have lifecycle limitations
-- Some dynamic content may require waiting/polling
-- Cross-origin iframes may have restricted access
-- Some anti-bot protections may detect automation
+- Service workers may sleep after 30s inactivity (extension reconnects on command)
+- Cross-origin iframes have restricted access (same-origin policy)
+- Some anti-bot systems may detect synthetic events
+- Screenshots require visible, active tab
+- No support for `file://` URLs without explicit permission
 
-## Troubleshooting
+## 🧪 CI / Release
 
-### Extension won't connect
-- Verify WebSocket server is running on specified port
-- Check firewall settings
-- Review console logs in service worker
+*GitHub Actions workflow coming soon — will include:*
+- Lint (ESLint)
+- Type-check (TypeScript — optional, currently plain JS)
+- Package extension as `.zip` for Chrome Web Store
+- Auto-draft release on tag push
 
-### Commands not executing
-- Ensure content script is loaded (check console)
-- Verify selectors are correct
-- Check for JavaScript errors in page
+## 🤝 Contributing
 
-### Screenshots are blank
-- Ensure tab is visible and active
-- Some pages may block screenshot capture
+Contributions welcome! Please:
+- Follow existing code style (ES6 modules, async/await, JSDoc for public APIs)
+- Add error handling for all async operations
+- Update README for new commands/options
+- Test on multiple sites (SPA, static, iframe-heavy)
 
-## Contributing
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
-Contributions are welcome! Please ensure:
-- Code follows existing style
-- All features are documented
-- Error handling is comprehensive
-- Security best practices are followed
+## 📄 License
 
-## License
+MIT License — see [LICENSE](LICENSE).
 
-MIT License - See LICENSE file for details
+## 🦞 Credits
 
-## Credits
+Part of the **OpenClaw** ecosystem — your personal AI assistant. Any OS. Any Platform. The lobster way.
 
-Created for OpenClaw AI browser automation project.
+- [OpenClaw Main Repo](https://github.com/openclaw/openclaw)
+- [OpenClaw Website](https://openclaw.ai)
+- [Documentation](https://docs.openclaw.ai)
+- [Discord Community](https://discord.gg/clawd)
+
+Maintained by Parithosh Varma 🦞
