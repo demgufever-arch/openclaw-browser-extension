@@ -1,6 +1,6 @@
-[![CI](https://github.com/parithosh-varma/openclaw-browser-extension/actions/workflows/ci.yml/badge.svg)](https://github.com/parithosh-varma/openclaw-browser-extension/actions/workflows/ci.yml)
-[![Release](https://img.shields.io/github/v/release/parithosh-varma/openclaw-browser-extension)](https://github.com/parithosh-varma/openclaw-browser-extension/releases)
-[![License](https://img.shields.io/github/license/parithosh-varma/openclaw-browser-extension)](https://github.com/parithosh-varma/openclaw-browser-extension/blob/main/LICENSE)
+[![CI](https://github.com/demgufever-arch/openclaw-browser-extension/actions/workflows/ci.yml/badge.svg)](https://github.com/demgufever-arch/openclaw-browser-extension/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/demgufever-arch/openclaw-browser-extension)](https://github.com/demgufever-arch/openclaw-browser-extension/releases)
+[![License](https://img.shields.io/github/license/demgufever-arch/openclaw-browser-extension)](https://github.com/demgufever-arch/openclaw-browser-extension/blob/main/LICENSE)
 [![Manifest V3](https://img.shields.io/badge/Manifest-V3-blue)](https://developer.chrome.com/docs/extensions/mv3/)
 [![Node](https://img.shields.io/badge/Node-24%2B-green)](https://nodejs.org/)
 
@@ -38,7 +38,7 @@ OpenClaw Browser Control extends your OpenClaw assistant with the ability to **n
 
 ```bash
 # Clone the repo
-git clone https://github.com/parithosh-varma/openclaw-browser-extension.git
+git clone https://github.com/demgufever-arch/openclaw-browser-extension.git
 cd openclaw-browser-extension
 
 # Open Chrome → chrome://extensions/
